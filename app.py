@@ -1,5 +1,11 @@
 import streamlit as st
-from questions import demo_questions
+from questions import demo_questions, questions
+import requests
+from datetime import datetime
+
+# --- Configure Yoco secret key ---
+# Use sandbox key for testing, live key when deployed
+YOCO_SECRET_KEY = "sk_test_yourSandboxKeyHere"
 
 # --- Sidebar Branding ---
 st.sidebar.image("logo.png", width="stretch")
@@ -13,9 +19,46 @@ st.markdown(
 
     - 🎯 **Purpose:** Help learners build confidence in maths through practice.  
     - 📝 **Demo Mode:** Try 10 free sample questions to see how the app works.  
-    - ✅ **Benefit:** Learners get instant feedback and explanations.  
+    - 💳 **Full Mode:** Parents can unlock 100 carefully prepared questions for R100.  
+    - ✅ **Benefit:** Learners get instant feedback, explanations, and a certificate at the end.  
     """
 )
+
+# --- Payment Gate ---
+st.sidebar.title("Quiz Mode")
+
+if "full_unlocked" not in st.session_state:
+    st.session_state.full_unlocked = False
+
+if st.sidebar.button("💳 Unlock Full Quiz (R100)", type="primary"):
+    response = requests.post(
+        "https://online.yoco.com/v1/checkouts",
+        headers={"X-Auth-Secret-Key": YOCO_SECRET_KEY},
+        json={
+            "amount": 10000,   # cents = R100.00
+            "currency": "ZAR",
+            "successUrl": "https://maths8-app.streamlit.app?success=true",
+            "cancelUrl": "https://maths8-app.streamlit.app?cancel=true"
+        }
+    )
+    checkout = response.json()
+    if "redirectUrl" in checkout:
+        st.sidebar.markdown(f"[Click here to Pay R100]({checkout['redirectUrl']})")
+    else:
+        st.sidebar.error(f"Payment session could not be created: {checkout}")
+
+# ✅ Detect success
+query_params = st.query_params
+if "success" in query_params:
+    st.session_state.full_unlocked = True
+
+# --- Mode Selector ---
+if st.session_state.full_unlocked:
+    active_questions = questions
+    st.sidebar.success("✅ Full Quiz Unlocked (100 questions)")
+else:
+    active_questions = demo_questions
+    st.sidebar.info("Demo Mode: 10 free questions")
 
 # --- Quiz Logic ---
 if "q_index" not in st.session_state:
@@ -23,7 +66,6 @@ if "q_index" not in st.session_state:
 if "submitted" not in st.session_state:
     st.session_state.submitted = False
 
-active_questions = demo_questions
 q = active_questions[st.session_state.q_index]
 
 st.subheader(f"📊 Question {st.session_state.q_index + 1} of {len(active_questions)}")
@@ -67,3 +109,12 @@ with col3:
     if st.button("🔄 Restart Quiz", type="secondary"):
         st.session_state.q_index = 0
         st.session_state.submitted = False
+        st.session_state.full_unlocked = False
+
+# --- Certificate (Full Mode only) ---
+if st.session_state.full_unlocked and st.session_state.q_index == len(active_questions) - 1 and st.session_state.submitted:
+    st.success("🎓 Congratulations! You completed the full quiz.")
+    learner_name = st.text_input("Enter learner's name for certificate:")
+    if st.button("📄 Download Certificate"):
+        cert_text = f"Certificate of Achievement\n\nThis certifies that {learner_name} successfully completed the Maths8 Grade 8 Quiz on {datetime.today().strftime('%Y-%m-%d')}."
+        st.download_button("Download Certificate", cert_text, file_name="certificate.txt")
