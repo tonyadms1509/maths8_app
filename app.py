@@ -101,4 +101,3 @@ if st.session_state.full_unlocked and st.session_state.q_index == len(active_que
     if st.button("📄 Download Certificate"):
         cert_text = f"Certificate of Achievement\n\nThis certifies that {learner_name} successfully completed the Maths8 Grade 8 Quiz on {datetime.today().strftime('%Y-%m-%d')}."
         st.download_button("Download Certificate", cert_text, file_name="certificate.txt")
-s
