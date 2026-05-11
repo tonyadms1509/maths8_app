@@ -31,21 +31,31 @@ if "full_unlocked" not in st.session_state:
     st.session_state.full_unlocked = False
 
 if st.sidebar.button("💳 Unlock Full Quiz (R100)", type="primary"):
-    response = requests.post(
-        "https://online.yoco.com/v1/checkouts",
-        headers={"X-Auth-Secret-Key": YOCO_SECRET_KEY},
-        json={
-            "amount": 10000,   # cents = R100.00
-            "currency": "ZAR",
-            "successUrl": "https://maths8-app.streamlit.app?success=true",
-            "cancelUrl": "https://maths8-app.streamlit.app?cancel=true"
-        }
-    )
-    checkout = response.json()
-    if "redirectUrl" in checkout:
-        st.sidebar.markdown(f"[Click here to Pay R100]({checkout['redirectUrl']})")
-    else:
-        st.sidebar.error(f"Payment session could not be created: {checkout}")
+    try:
+        response = requests.post(
+            "https://online.yoco.com/v1/checkouts",
+            headers={
+                "X-Auth-Secret-Key": YOCO_SECRET_KEY,
+                "Content-Type": "application/json"
+            },
+            json={
+                "amount": 10000,   # cents = R100.00
+                "currency": "ZAR",
+                "successUrl": "https://maths8-app.streamlit.app?success=true",
+                "cancelUrl": "https://maths8-app.streamlit.app?cancel=true"
+            }
+        )
+        if response.status_code == 200:
+            checkout = response.json()
+            if "redirectUrl" in checkout:
+                st.sidebar.markdown(f"[Click here to Pay R100]({checkout['redirectUrl']})")
+            else:
+                st.sidebar.error("⚠️ Payment session created but no redirect URL.")
+        else:
+            st.sidebar.error(f"⚠️ Payment request failed: {response.status_code}")
+            st.sidebar.text(response.text)  # show raw error for debugging
+    except Exception as e:
+        st.sidebar.error(f"⚠️ Error creating payment session: {e}")
 
 # ✅ Detect success
 query_params = st.query_params
