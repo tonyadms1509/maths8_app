@@ -1,11 +1,6 @@
 import streamlit as st
 from questions import demo_questions, questions
-import requests
 from datetime import datetime
-
-# --- Configure Yoco secret key ---
-# Use sandbox key for testing, live key when deployed
-YOCO_SECRET_KEY = "sk_test_yourSandboxKeyHere"
 
 # --- Sidebar Branding ---
 st.sidebar.image("logo.png", width="stretch")
@@ -24,40 +19,18 @@ st.markdown(
     """
 )
 
-# --- Payment Gate ---
+# --- Payment Gate (Hosted Link) ---
 st.sidebar.title("Quiz Mode")
 
 if "full_unlocked" not in st.session_state:
     st.session_state.full_unlocked = False
 
-if st.sidebar.button("💳 Unlock Full Quiz (R100)", type="primary"):
-    try:
-        response = requests.post(
-            "https://online.yoco.com/v1/checkouts",
-            headers={
-                "X-Auth-Secret-Key": YOCO_SECRET_KEY,
-                "Content-Type": "application/json"
-            },
-            json={
-                "amount": 10000,   # cents = R100.00
-                "currency": "ZAR",
-                "successUrl": "https://maths8-app.streamlit.app?success=true",
-                "cancelUrl": "https://maths8-app.streamlit.app?cancel=true"
-            }
-        )
-        if response.status_code == 200:
-            checkout = response.json()
-            if "redirectUrl" in checkout:
-                st.sidebar.markdown(f"[Click here to Pay R100]({checkout['redirectUrl']})")
-            else:
-                st.sidebar.error("⚠️ Payment session created but no redirect URL.")
-        else:
-            st.sidebar.error(f"⚠️ Payment request failed: {response.status_code}")
-            st.sidebar.text(response.text)  # show raw error for debugging
-    except Exception as e:
-        st.sidebar.error(f"⚠️ Error creating payment session: {e}")
+if not st.session_state.full_unlocked:
+    st.sidebar.markdown("💳 To unlock the full quiz, please pay R100:")
+    # Replace with your actual Yoco hosted payment link
+    st.sidebar.markdown("[Click here to Pay R100](https://pay.yoco.com/r/yourHostedLinkHere)")
 
-# ✅ Detect success
+# ✅ Detect success via query param
 query_params = st.query_params
 if "success" in query_params:
     st.session_state.full_unlocked = True
@@ -128,3 +101,4 @@ if st.session_state.full_unlocked and st.session_state.q_index == len(active_que
     if st.button("📄 Download Certificate"):
         cert_text = f"Certificate of Achievement\n\nThis certifies that {learner_name} successfully completed the Maths8 Grade 8 Quiz on {datetime.today().strftime('%Y-%m-%d')}."
         st.download_button("Download Certificate", cert_text, file_name="certificate.txt")
+s
