@@ -2,6 +2,10 @@ import streamlit as st
 from questions import demo_questions, questions
 from datetime import datetime
 
+# --- Yoco Keys (for reference if needed in backend/webhooks) ---
+YOCO_PUBLIC_KEY = "pk_live_dce4206ddVonZ1kf4a24"
+YOCO_SECRET_KEY = "sk_live_6118503aM1J7kzZ8bec485fb0427"
+
 # --- Sidebar Branding ---
 st.sidebar.image("logo.png", width="stretch")
 st.sidebar.markdown("🎓 Maths8 Quiz App — For Grade 8 learners")
@@ -27,13 +31,19 @@ if "full_unlocked" not in st.session_state:
 
 if not st.session_state.full_unlocked:
     st.sidebar.markdown("💳 To unlock the full quiz, please pay R100:")
-    # Replace with your actual Yoco hosted payment link
-    st.sidebar.markdown("[Click here to Pay R100](https://pay.yoco.com/r/yourHostedLinkHere)")
+    # ✅ Live hosted payment link
+    st.sidebar.markdown("[Click here to Pay R100](https://pay.yoco.com/r/mEJyod)")
 
 # ✅ Detect success via query param
 query_params = st.query_params
 if "success" in query_params:
     st.session_state.full_unlocked = True
+
+# --- Thank You Splash ---
+if st.session_state.full_unlocked and "thank_you_shown" not in st.session_state:
+    st.success("💳 Thank you for your payment! The full Maths8 quiz is now unlocked.")
+    st.info("Parents: Your support helps learners build confidence in maths. Enjoy the full 100‑question experience!")
+    st.session_state.thank_you_shown = True
 
 # --- Mode Selector ---
 if st.session_state.full_unlocked:
@@ -93,6 +103,8 @@ with col3:
         st.session_state.q_index = 0
         st.session_state.submitted = False
         st.session_state.full_unlocked = False
+        if "thank_you_shown" in st.session_state:
+            del st.session_state["thank_you_shown"]
 
 # --- Certificate (Full Mode only) ---
 if st.session_state.full_unlocked and st.session_state.q_index == len(active_questions) - 1 and st.session_state.submitted:
