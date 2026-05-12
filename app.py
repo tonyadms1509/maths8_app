@@ -1,21 +1,26 @@
 import streamlit as st
 from questions import demo_questions, questions
 from datetime import datetime
+import os
 
 # --- Yoco Keys (for reference if needed in backend/webhooks) ---
 YOCO_PUBLIC_KEY = "pk_live_dce4206ddVonZ1kf4a24"
 YOCO_SECRET_KEY = "sk_live_6118503aM1J7kzZ8bec485fb0427"
 
 # --- Sidebar Branding ---
-# Ensure logo.png is in the same folder as app.py
-st.sidebar.image("logo.png", use_column_width=True)
-st.sidebar.markdown("🎓 Maths7 Quiz App — For Grade 7 learners")
+logo_path = "logo.png"
+if os.path.exists(logo_path):
+    st.sidebar.image(logo_path, use_column_width=True)
+else:
+    st.sidebar.warning("⚠️ Logo file not found. Please place logo.png in the app folder.")
+
+st.sidebar.markdown("🎓 Maths Grade 8 Quiz App")
 
 # --- App Description ---
 st.markdown(
     """
-    # 📘 Maths7 Quiz App
-    Welcome to the Maths7 Quiz App — designed for **Grade 7 learners**.  
+    # 📘 Maths Grade 8 Quiz App
+    Welcome to the Maths Grade 8 Quiz App — designed for learners.  
 
     - 🎯 **Purpose:** Help learners build confidence in maths through practice.  
     - 📝 **Demo Mode:** Try 10 free sample questions to see how the app works.  
@@ -49,7 +54,7 @@ if "success" in query_params:
 
 # --- Thank You Splash ---
 if st.session_state.full_unlocked and "thank_you_shown" not in st.session_state:
-    st.success("💳 Thank you for your payment! The full Maths7 quiz is now unlocked.")
+    st.success("💳 Thank you for your payment! The full Maths Grade 8 quiz is now unlocked.")
     st.info("Parents: Your support helps learners build confidence in maths. Enjoy the full 100‑question experience!")
     st.session_state.thank_you_shown = True
 
@@ -119,9 +124,9 @@ if st.session_state.full_unlocked and st.session_state.q_index == len(active_que
     st.success("🎓 Congratulations! You completed the full quiz.")
     learner_name = st.text_input("Enter learner's name for certificate:")
     if st.button("📄 Download Certificate"):
-        cert_text = f"Certificate of Achievement\n\nThis certifies that {learner_name} successfully completed the Maths7 Grade 7 Quiz on {datetime.today().strftime('%Y-%m-%d')}."
+        cert_text = f"Certificate of Achievement\n\nThis certifies that {learner_name} successfully completed the Maths Grade 8 Quiz on {datetime.today().strftime('%Y-%m-%d')}."
         st.download_button("Download Certificate", cert_text, file_name="certificate.txt")
 
 # --- Branded Footer ---
 st.markdown("---")
-st.markdown("🔗 Powered by **StockLinkSA · Maths7 Quiz**")
+st.markdown("🔗 Powered by **StockLinkSA · Maths Grade 8 Quiz**")
