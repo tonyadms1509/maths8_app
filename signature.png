@@ -1,0 +1,5 @@
+# Add signature image
+try:
+    pdf.image("signature.png", x=70, y=230, w=60)
+except:
+    pass  # Skip if signature not found
