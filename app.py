@@ -51,7 +51,8 @@ else:
 
     if not st.session_state.full_unlocked:
         st.sidebar.markdown("💳 To unlock the full quiz, please pay R100:")
-        st.sidebar.markdown("[Pay with Yoco](https://pay.yoco.com/r/mEJyod)")
+        st.sidebar.markdown("[Pay with Yoco](https://pay.yoco.com/r/mEJyod?redirectOnPaymentSuccess=https://maths8-app.streamlit.app)")
+
         st.sidebar.markdown("[Pay with PayPal](https://www.paypal.com/ncp/payment/GUBA8XCC45UYA)")
         st.sidebar.info(
             "Parents: After clicking a payment link, Yoco or PayPal will open in a new page. "
