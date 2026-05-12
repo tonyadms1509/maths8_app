@@ -7,7 +7,7 @@ YOCO_PUBLIC_KEY = "pk_live_dce4206ddVonZ1kf4a24"
 YOCO_SECRET_KEY = "sk_live_6118503aM1J7kzZ8bec485fb0427"
 
 # --- Sidebar Branding ---
-st.sidebar.image("logo.png", width="stretch")
+st.sidebar.image("logo.png", use_column_width=True)
 st.sidebar.markdown("🎓 Maths8 Quiz App — For Grade 8 learners")
 
 # --- App Description ---
@@ -113,3 +113,7 @@ if st.session_state.full_unlocked and st.session_state.q_index == len(active_que
     if st.button("📄 Download Certificate"):
         cert_text = f"Certificate of Achievement\n\nThis certifies that {learner_name} successfully completed the Maths8 Grade 8 Quiz on {datetime.today().strftime('%Y-%m-%d')}."
         st.download_button("Download Certificate", cert_text, file_name="certificate.txt")
+
+# --- Branded Footer ---
+st.markdown("---")
+st.markdown("🔗 Powered by **StockLinkSA · Maths8 Quiz**")
