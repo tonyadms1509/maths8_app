@@ -34,6 +34,13 @@ if not st.session_state.full_unlocked:
     # ✅ Live hosted payment link
     st.sidebar.markdown("[Click here to Pay R100](https://pay.yoco.com/r/mEJyod)")
 
+    # 👉 Parent instructions block
+    st.sidebar.info(
+        "Parents: After clicking the payment link, Yoco will open in a new page. "
+        "Please complete the payment securely. Once successful, you will be redirected "
+        "back to this app automatically and the full 100‑question quiz will unlock."
+    )
+
 # ✅ Detect success via query param
 query_params = st.query_params
 if "success" in query_params:
