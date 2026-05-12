@@ -7,14 +7,15 @@ YOCO_PUBLIC_KEY = "pk_live_dce4206ddVonZ1kf4a24"
 YOCO_SECRET_KEY = "sk_live_6118503aM1J7kzZ8bec485fb0427"
 
 # --- Sidebar Branding ---
+# Ensure logo.png is in the same folder as app.py
 st.sidebar.image("logo.png", use_column_width=True)
-st.sidebar.markdown("🎓 Maths8 Quiz App — For Grade 8 learners")
+st.sidebar.markdown("🎓 Maths7 Quiz App — For Grade 7 learners")
 
 # --- App Description ---
 st.markdown(
     """
-    # 📘 Maths8 Quiz App
-    Welcome to the Maths8 Quiz App — designed for **Grade 8 learners**.  
+    # 📘 Maths7 Quiz App
+    Welcome to the Maths7 Quiz App — designed for **Grade 7 learners**.  
 
     - 🎯 **Purpose:** Help learners build confidence in maths through practice.  
     - 📝 **Demo Mode:** Try 10 free sample questions to see how the app works.  
@@ -48,7 +49,7 @@ if "success" in query_params:
 
 # --- Thank You Splash ---
 if st.session_state.full_unlocked and "thank_you_shown" not in st.session_state:
-    st.success("💳 Thank you for your payment! The full Maths8 quiz is now unlocked.")
+    st.success("💳 Thank you for your payment! The full Maths7 quiz is now unlocked.")
     st.info("Parents: Your support helps learners build confidence in maths. Enjoy the full 100‑question experience!")
     st.session_state.thank_you_shown = True
 
@@ -118,9 +119,9 @@ if st.session_state.full_unlocked and st.session_state.q_index == len(active_que
     st.success("🎓 Congratulations! You completed the full quiz.")
     learner_name = st.text_input("Enter learner's name for certificate:")
     if st.button("📄 Download Certificate"):
-        cert_text = f"Certificate of Achievement\n\nThis certifies that {learner_name} successfully completed the Maths8 Grade 8 Quiz on {datetime.today().strftime('%Y-%m-%d')}."
+        cert_text = f"Certificate of Achievement\n\nThis certifies that {learner_name} successfully completed the Maths7 Grade 7 Quiz on {datetime.today().strftime('%Y-%m-%d')}."
         st.download_button("Download Certificate", cert_text, file_name="certificate.txt")
 
 # --- Branded Footer ---
 st.markdown("---")
-st.markdown("🔗 Powered by **StockLinkSA · Maths8 Quiz**")
+st.markdown("🔗 Powered by **StockLinkSA · Maths7 Quiz**")
